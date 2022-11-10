@@ -1,0 +1,3 @@
+[submodule "DeepMet"]
+	path = DeepMet
+	url = git@github.com:YU-NLPLab/DeepMet.git
