@@ -1,4 +1,5 @@
 # -r ./DeepMet/requirements.txt
 
-networkx
+matplotlib
 pandas
+networkx
