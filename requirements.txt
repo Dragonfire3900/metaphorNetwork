@@ -1,0 +1,4 @@
+# -r ./DeepMet/requirements.txt
+
+networkx
+pandas
