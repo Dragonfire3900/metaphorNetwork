@@ -3,3 +3,11 @@
 matplotlib
 pandas
 networkx
+requests
+
+#NLP libraries
+nltk
+gensim
+
+#Custom local module
+install -e wordExplorer
