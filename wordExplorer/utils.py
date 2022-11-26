@@ -2,12 +2,12 @@ from thesa import thesaQueue
 import json
 import gensim.downloader as api
 
-def getWordData(words:str, dir:str= './data/synonyms/', order: int= 3, waitTime: float= 0.1):
+def getWordData(words:str, loc:str= './data/synonyms/', order: int= 3, waitTime: float= 0.1):
     crawler = thesaQueue(order, waitTime= waitTime)
     crawler.add(words)
 
     try:
-        with open(dir + f'{words}.json', 'r', encoding= 'utf-8') as f:
+        with open(loc + f'{words}.json', 'r', encoding= 'utf-8') as f:
             data = json.load(f)
     except FileNotFoundError:
         data = {}
@@ -23,7 +23,7 @@ def getWordData(words:str, dir:str= './data/synonyms/', order: int= 3, waitTime:
     
     data = {key:list(val) for key, val in data.items()}
 
-    with open(dir + f'{words}.json', "w", encoding="utf-8") as f:
+    with open(loc + f'{words}.json', "w", encoding="utf-8") as f:
         json.dump(data, f)
 
     return data
