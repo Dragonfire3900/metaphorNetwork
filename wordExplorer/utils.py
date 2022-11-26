@@ -1,4 +1,4 @@
-from thesa import thesaQueue
+from .thesa import thesaQueue
 import json
 import gensim.downloader as api
 
