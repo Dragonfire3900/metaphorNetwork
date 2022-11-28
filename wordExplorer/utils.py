@@ -60,3 +60,26 @@ def loadWord2Vec(mName: str = 'word2vec-google-news-300'):
                     weights[(key, item)] = default
         return weights
     return getSimilarity
+
+def jsonSimi(weight: dict) -> dict:
+    def convtoJson(weight: dict) -> dict:
+        newWeights = {}
+
+        for key, val in weight.items():
+            newWeights[f'{key[0]}+{key[1]}'] = val
+        return newWeights
+
+    def convfromJson(weight: dict) -> dict:
+        newWeights = {}
+
+        for key, val in weight.items():
+            first, second = key.split('+')
+            newWeights[(first, second)] = val
+        return newWeights
+
+    keys = list(weight.keys())
+
+    if isinstance(keys[0], tuple) and len(keys[0]) == 2:
+        return convtoJson(weight)
+    else:
+        return convfromJson(weight)
