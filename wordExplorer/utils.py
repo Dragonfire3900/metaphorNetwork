@@ -1,9 +1,9 @@
-from .thesa import thesaQueue
+from .thesa import websterCrawl
 import json
 import gensim.downloader as api
 
 def getWordData(words:str, loc:str= './data/synonyms/', order: int= 3, waitTime: float= 0.1):
-    crawler = thesaQueue(order, waitTime= waitTime)
+    crawler = websterCrawl(order, waitTime= waitTime)
     crawler.add(words)
 
     try:
