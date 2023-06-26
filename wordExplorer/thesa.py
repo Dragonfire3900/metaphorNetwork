@@ -5,8 +5,6 @@ import json
 from queue import Queue
 from abc import ABC
 
-from nltk.data import find
-
 def getData(url: str, data: dict, apiKey: str, timeout= 10) -> requests.Response:
     with open("./data/secrets.json", encoding="utf-8") as f:
         secret = json.load(f)
@@ -78,7 +76,7 @@ class thesaurusCrawler(ABC):
 
             if self.store is not None:
                 if word in self.store:
-                    print(f"Word {word} was already known using store")
+                    # print(f"Word {word} was already known using store")
                     for item in self.store[word]:
                         self._add(item, order - 1)
                     continue
@@ -88,7 +86,8 @@ class thesaurusCrawler(ABC):
             if res.status_code == 200:
                 flatten = []
                 for item in self.iterJson(res.json(), word):
-                    flatten.append(item)
+                    if item != word:
+                        flatten.append(item)
                 flatten = set(flatten)
                 for item in flatten:
                     yield word, item, order
@@ -121,3 +120,18 @@ class websterCrawl(thesaurusCrawler):
 
     def __str__(self):
         return f"Thesa Crawler(order: {self.order}, wt: {self.wt}, to: {self.to}) with queue size: {self._qu.qsize()}"
+
+class bighugeCrawl(thesaurusCrawler):
+    def __init__(self, order: int = 1, waitTime: float = 0.1, timeout: int = 10) -> None:
+        super().__init__(
+            order,
+            "https://words.bighugelabs.com/api/2/{key}/{word}/json",
+            "bighugelabs",
+            waitTime,
+            timeout
+        )
+
+    def iterJson(self, resJson: List[dict], currWord: str) -> str:
+        for group in resJson.values():
+            for item in group.get('syn', []):
+                yield item

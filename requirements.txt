@@ -4,6 +4,7 @@ matplotlib
 pandas
 networkx
 requests
+neo4j
 
 #NLP libraries
 nltk

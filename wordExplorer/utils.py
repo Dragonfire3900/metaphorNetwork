@@ -1,9 +1,8 @@
-from .thesa import websterCrawl
 import json
 import gensim.downloader as api
 
-def getWordData(words:str, loc:str= './data/synonyms/', order: int= 3, waitTime: float= 0.1):
-    crawler = websterCrawl(order, waitTime= waitTime)
+def getWordData(crawlType, words: str, loc:str= './data/synonyms/', order: int= 3, waitTime: float= 0.1):
+    crawler = crawlType(order, waitTime= waitTime)
     crawler.add(words)
 
     try:
@@ -19,12 +18,12 @@ def getWordData(words:str, loc:str= './data/synonyms/', order: int= 3, waitTime:
             data[source] = set([subject])
         else:
             data[source].add(subject)
-        print(f'Eval: {source}-{subject}-{order}')
+        # print(f'Eval: {source}-{subject}-{order}')
     
     data = {key:list(val) for key, val in data.items()}
 
-    with open(loc + f'{words}.json', "w", encoding="utf-8") as f:
-        json.dump(data, f)
+    # with open(loc + f'{words}.json', "w", encoding="utf-8") as f:
+    #     json.dump(data, f)
 
     return data
 
@@ -39,7 +38,7 @@ def loadWord2Vec(mName: str = 'word2vec-google-news-300'):
     """
     model = api.load(mName)
 
-    def getSimilarity(data: dict, fun: callable = lambda x: x + 1, default: float = 1.01):
+    def getSimilarity(data: dict, fun: callable = lambda x: x + 1, default: float = None):
         """Calculates the similarity between all of the words in a given dictionary
 
         Args:
@@ -51,14 +50,17 @@ def loadWord2Vec(mName: str = 'word2vec-google-news-300'):
             dict[tuple[str, str], float]: A dictionary which gives the weights of word pairs
         """
         weights = {}
+        total = 0
 
         for key in data.keys():
             for item in data[key]:
                 try:
                     weights[(key, item)] = fun(model.similarity(key, item))
                 except KeyError:
-                    weights[(key, item)] = default
-        return weights
+                    total += 1
+                    if default is not None:
+                        weights[(key, item)] = default
+        return weights, total
     return getSimilarity
 
 def jsonSimi(weight: dict) -> dict:
